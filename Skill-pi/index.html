@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Skill-π: Skill-Policy Co-Evolution for Self-Improving Multimodal Reasoning.">
+  <meta property="og:title" content="Skill-π: Skill-Policy Co-Evolution">
+  <meta property="og:description" content="Turning self-generated multimodal experience into reusable reasoning skills.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://miaopingyi.github.io/Skill-pi/assets/motivation.webp">
+  <meta property="og:url" content="https://miaopingyi.github.io/Skill-pi/">
+  <link rel="canonical" href="https://miaopingyi.github.io/Skill-pi/">
+  <title>Skill-π</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <nav class="top-navigation" aria-label="More research">
+    <details class="research-menu"><summary>More Research <span aria-hidden="true">⌄</span></summary><div class="research-dropdown"><a href="https://github.com/Miaopingyi" target="_blank" rel="noopener noreferrer">Miaopingyi on GitHub</a></div></details>
+  </nav>
+  <main id="main">
+    <header class="publication-header">
+      <h1>Skill-<span class="pi">π</span></h1>
+      <h2 class="publication-subtitle">Skill-Policy Co-Evolution for Self-Improving Multimodal Reasoning</h2>
+      <div class="publication-authors">
+        <a href="https://openreview.net/profile?id=~Pingyi_Miao1" target="_blank" rel="noopener noreferrer">Pingyi Miao<sup>1</sup></a>,
+        <a href="https://openreview.net/profile?id=~Xianlai_Chen1" target="_blank" rel="noopener noreferrer">Xianlai Chen<sup>1</sup></a>,
+        <a href="https://openreview.net/profile?id=~Yunbo_Wang5" target="_blank" rel="noopener noreferrer">Yunbo Wang<sup>1,†</sup></a>,
+        <a href="https://openreview.net/profile?id=~Yuxin_Peng1" target="_blank" rel="noopener noreferrer">Yuxin Peng<sup>2</sup></a>
+      </div>
+      <p class="publication-affiliations"><span><sup>1</sup> Central South University</span>, <span><sup>2</sup> Peking University</span></p>
+      <p class="correspondence">† Corresponding author: <a href="https://openreview.net/profile?id=~Yunbo_Wang5" target="_blank" rel="noopener noreferrer">Yunbo Wang</a></p>
+      <div class="publication-links"><a href="#method"><span aria-hidden="true">☷</span> Method</a><a href="#results"><span aria-hidden="true">▥</span> Results</a><a href="#examples"><span aria-hidden="true">▧</span> Examples</a></div>
+    </header>
+    <div class="teaser"><figure>
+      <button class="figure-link" data-image="assets/motivation.webp" data-kind="paper" data-alt="Figure 1. Sample-specific trajectories, unresolved problems, and evolutionary and data efficiency comparisons." aria-label="Enlarge motivation figure" title="Click to enlarge">
+        <img src="assets/motivation.webp" width="2795" height="1271" alt="Figure 1. Sample-specific trajectories, unresolved problems, and evolutionary and data efficiency comparisons.">
+      </button>
+      <figcaption><b>Overview of Skill-π.</b> Self-generated experience is abstracted into reusable reasoning skills, which guide exploration and evolve together with the policy.</figcaption>
+    </figure></div>
+
+    <section class="paper-section" id="abstract">
+      <h2>Abstract</h2>
+      <div class="content"><p>Post-training with explicit reasoning trajectories is important for enhancing the reasoning capabilities of Multimodal Large Language Models (MLLMs). However, obtaining high-quality reasoning trajectories typically requires costly human annotation or supervision from stronger external models. To reduce this cost, self-improvement paradigms have emerged, enabling models to generate, verify, and learn from their own reasoning experience. Despite their effectiveness, existing self-improvement methods remain largely trajectory-centric, repeatedly consuming sample-specific reasoning trajectories while leaving persistently unresolved samples with little contribution to subsequent improvement. In this work, we introduce Skill-π, a skill-policy co-evolution framework that turns self-generated multimodal experience into reusable reasoning skills and continuously expands their capability coverage. In Skill-π, a shared MLLM policy jointly performs skill selection, utilization, and evolution, with stage-specific credit assignment yielding learning signals according to the downstream consequences of each decision. The newly-recovered successful experience further improves the parametric policy and evolves the skill library, allowing reusable skills and the policy to improve iteratively across evolution rounds. Experiments show that Skill-π achieves up to 3× higher evolutionary efficiency and 2.7× greater data efficiency than existing self-improvement methods. Across diverse benchmarks spanning mathematical, chart/document, and general multimodal reasoning, Skill-π also achieves stronger performance against representative multimodal reasoning models.</p></div>
+    </section>
+
+    <section class="paper-section" id="method">
+      <h2>Skill-π</h2>
+      <div class="content">
+        <h3>Overview</h3>
+        <p>Skill-π is a skill-policy co-evolution framework for self-improving multimodal reasoning. It preserves self-generated experience in both the parametric policy and a persistent library of reusable reasoning skills. Successful trajectories improve the policy, while recurring reasoning behaviors across related successes are abstracted into transferable strategies.</p>
+        <figure>
+      <button class="figure-link" data-image="assets/framework.webp" data-kind="paper" data-alt="Figure 2. Skill construction and selection, utilization, and skill-policy co-evolution with stage-specific credit." aria-label="Enlarge framework figure" title="Click to enlarge">
+        <img src="assets/framework.webp" width="3600" height="1964" loading="lazy" alt="Figure 2. Skill construction and selection, utilization, and skill-policy co-evolution with stage-specific credit.">
+      </button>
+      <figcaption><b>Skill-π framework.</b> Cross-sample skill construction, multi-branch reasoning, and stage-specific credit connect skill reuse with policy improvement.</figcaption>
+    </figure>
+        <h3>Skill Construction and Reuse</h3>
+        <p>Verified successful samples are grouped by visual-state compatibility and question similarity. Recurring reasoning strategies are consolidated into skills. For a new sample, the shared policy retrieves compatible skills, selects distinct strategies, and generates multiple reasoning trajectories under each selected skill. Verified successes provide new experience for subsequent improvement.</p>
+        <h3>Stage-Specific Credit Assignment</h3>
+        <p>Skill selection receives credit from downstream outcomes across skill branches. Utilization receives credit by comparing trajectories within the same branch. Evolution proposals receive delayed credit through subsequent reuse of the constructed skills. Stage-masked GRPO applies each learning signal to the corresponding decision stage, allowing the policy and skill library to improve together.</p>
+      </div>
+    </section>
+
+    <section class="paper-section" id="results">
+      <h2>Experiment Results</h2>
+      <div class="content">
+        <h3>Main Results</h3>
+        <p>We evaluate Skill-π-7B and Skill-π-8B, based on Qwen2.5-VL-7B and Qwen3-VL-8B, across mathematical, chart/document, and general multimodal reasoning benchmarks.</p>
+        <figure>
+      <button class="figure-link" data-image="assets/main-results-table.webp" data-kind="paper" data-alt="Table 2. Accuracy of multimodal models on MathVerse, MathVision, MathVista, WeMath, HallBench, ChartQA and MMMU." aria-label="Enlarge main results table" title="Click to enlarge">
+        <img src="assets/main-results-table.webp" width="2321" height="1429" loading="lazy" alt="Table 2. Accuracy of multimodal models on MathVerse, MathVision, MathVista, WeMath, HallBench, ChartQA and MMMU.">
+      </button>
+      <figcaption>Comparison with general and reasoning MLLMs across seven multimodal reasoning benchmarks.</figcaption>
+    </figure>
+        <p>Skill-π-7B improves average accuracy from 58.3 to 65.5, a gain of 7.2 percentage points over the base model. Skill-π-8B improves the average from 70.3 to 75.4, a gain of 5.1 points. Improvements extend across all seven benchmarks.</p>
+        <h3>Comparison with Self-Improvement Methods</h3>
+        <p>For a controlled comparison with self-improvement methods, we use the SFT-only variant, Skill-π-SFT, under the same Qwen2.5-VL backbones and training protocol.</p>
+        <figure>
+      <button class="figure-link" data-image="assets/self-improvement-table.webp" data-kind="paper" data-alt="Table 1. SFT-only self-improvement comparison with Qwen2.5-VL 3B and 7B on SLAKE, VQA-RAD and Geometry3K." aria-label="Enlarge self-improvement table" title="Click to enlarge">
+        <img src="assets/self-improvement-table.webp" width="2321" height="1773" loading="lazy" alt="Table 1. SFT-only self-improvement comparison with Qwen2.5-VL 3B and 7B on SLAKE, VQA-RAD and Geometry3K.">
+      </button>
+      <figcaption>Comparison with self-improvement methods. Skill-π-SFT is the SFT-only variant without subsequent RL optimization.</figcaption>
+    </figure>
+        <h3>Iterative Self-Improvement</h3>
+        <figure>
+      <button class="figure-link" data-image="assets/iterations-table.webp" data-kind="paper" data-alt="Table 3. Average accuracy: base 58.3, cold-start 60.1, iteration 1 62.0, iteration 2 63.8, iteration 3 65.5." aria-label="Enlarge iteration results table" title="Click to enlarge">
+        <img src="assets/iterations-table.webp" width="2321" height="490" loading="lazy" alt="Table 3. Average accuracy: base 58.3, cold-start 60.1, iteration 1 62.0, iteration 2 63.8, iteration 3 65.5.">
+      </button>
+      <figcaption>Performance across three self-improvement iterations based on Qwen2.5-VL-7B.</figcaption>
+    </figure>
+        <p>The 7B model improves on every benchmark across three co-evolution rounds. Average accuracy increases from 60.1 after cold-start initialization to 62.0, 63.8, and 65.5, yielding a cumulative gain of 5.4 percentage points.</p>
+      </div>
+    </section>
+
+    <section class="paper-section" id="examples">
+      <h2>Case Study Examples</h2>
+      <div class="content">
+        <p>The following examples illustrate how retrieved skills supply the reasoning operation needed to turn perceived evidence into a consistent answer. Responses are condensed from the qualitative examples.</p>
+        <h3>Reference-Level Comparison</h3>
+        <div class="case-image"><figure>
+      <button class="figure-link" data-image="assets/elevation.webp" data-alt="Underground lake at minus 350 feet and mountain peak at 325 feet." aria-label="Enlarge elevation example" title="Click to enlarge">
+        <img src="assets/elevation.webp" width="258" height="94" loading="lazy" alt="Underground lake at minus 350 feet and mountain peak at 325 feet.">
+      </button>
+      <figcaption>Original input: elevations of the two endpoints.</figcaption>
+    </figure></div>
+        <p><b>Question.</b> Which endpoint is farther from sea level?</p>
+        <p><b>Selected skill.</b> Compare absolute distances from the reference level. Identify the two elevations, calculate their absolute values, and compare the resulting distances.</p>
+        <p><b>Base-model response.</b> Selects the mountain peak because its elevation is positive.</p>
+        <p><b>Skill-assisted response.</b> |−350| = 350 &gt; |325| = 325. The underground lake is farther from sea level.</p>
+        <h3>Reflection Geometry</h3>
+        <div class="case-image"><figure>
+      <button class="figure-link" data-image="assets/geometry.webp" data-alt="Point P and its reflections P1 and P2 across OA and OB. The segment P1P2 meets the sides at M and N." aria-label="Enlarge geometry example" title="Click to enlarge">
+        <img src="assets/geometry.webp" width="130" height="140" loading="lazy" alt="Point P and its reflections P1 and P2 across OA and OB. The segment P1P2 meets the sides at M and N.">
+      </button>
+      <figcaption>Original input: reflection geometry.</figcaption>
+    </figure></div>
+        <p><b>Question.</b> P₁ and P₂ are reflections of P across OA and OB. The segment P₁P₂ meets OA at M and OB at N. If P₁P₂ = 6 cm, what is the perimeter of △PMN?</p>
+        <p><b>Selected skill.</b> Convert reflection symmetry into equal-length constraints: PM = P₁M and PN = P₂N.</p>
+        <p><b>Base-model response.</b> Interprets symmetry as implying half of P₁P₂ and answers 3 cm.</p>
+        <p><b>Skill-assisted response.</b> PM + MN + PN = P₁M + MN + NP₂ = P₁P₂ = 6 cm.</p>
+      </div>
+    </section>
+  </main>
+  <footer><p>This website’s layout is inspired by <a href="https://tiger-ai-lab.github.io/VisCoder2/" target="_blank" rel="noopener noreferrer">VisCoder2</a>.</p></footer>
+  <dialog id="image-dialog" aria-label="Enlarged paper image"><button class="dialog-close" aria-label="Close enlarged image">×</button><img id="dialog-image" alt=""></dialog>
+</body>
+</html>
