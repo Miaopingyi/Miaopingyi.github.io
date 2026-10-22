@@ -33,3 +33,9 @@ Publication thumbnails reproduce the respective paper frameworks. DeLPS has a pa
 ## License
 
 New homepage code in `index.html` is available under the MIT license in `LICENSE`. Publication figures, avatar, and existing project materials retain their original rights and licenses.
+
+## Biographical information
+
+Education, honors, and the Furong Laboratory experience follow the author-provided CV and subsequent date confirmations. The Ph.D. phase starts in September 2025, following enrollment on the master's-to-Ph.D. track in September 2024. Both listed honors are from 2026.
+
+Research experience, mentor and collaborator relationships, and academic service roles follow information confirmed by the author. The full CV is not included in this website.
